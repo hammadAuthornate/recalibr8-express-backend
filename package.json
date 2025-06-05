@@ -5,10 +5,10 @@
   "main": "src/index.ts",
   "private": true,
   "scripts": {
-    "dev-watch": "ts-node-dev src/index.ts",
+    "dev-watch": "ts-node-dev --ignore-watch 'src/public/**/*' src/index.ts",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "debug": "DEBUG=express:* nodemon src/index.ts",
+    "dev": "nodemon",
+    "debug": "DEBUG=express:* nodemon",
     "build": "tsc",
     "buildAndStart": "tsc && node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
+    "ccxt": "^4.4.88",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
