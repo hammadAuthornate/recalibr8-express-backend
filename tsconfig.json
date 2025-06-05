@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "rootDir": "./",
+    "skipLibCheck": true,
+    "target": "ES6",
+    "types": ["node"]
+    // "baseUrl": "./",
+    // "paths": {
+    //   "@/*" : ["src/*"]
+    // }
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules"]
+}
