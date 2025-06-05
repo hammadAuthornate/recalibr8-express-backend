@@ -51,6 +51,16 @@ export class BotService {
     }
   }
 
+  private static convertTimestamps(data: any): any {
+    if (data.createdAt && typeof data.createdAt.toDate === "function") {
+      data.createdAt = data.createdAt.toDate().toISOString();
+    }
+    if (data.updatedAt && typeof data.updatedAt.toDate === "function") {
+      data.updatedAt = data.updatedAt.toDate().toISOString();
+    }
+    return data;
+  }
+
   static async getById(id: string): Promise<BOT> {
     try {
       const doc = await db.collection(this.COLLECTION).doc(id).get();
@@ -59,9 +69,10 @@ export class BotService {
         throw new ApiError(404, "Bot not found");
       }
 
+      const data = doc.data();
       return {
         id: doc.id,
-        ...doc.data(),
+        ...this.convertTimestamps(data),
       } as BOT;
     } catch (error) {
       if (error instanceof ApiError) throw error;
@@ -80,7 +91,7 @@ export class BotService {
 
       return snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...this.convertTimestamps(doc.data()),
       })) as BOT[];
     } catch (error) {
       throw new ApiError(500, "Error retrieving bots", [
