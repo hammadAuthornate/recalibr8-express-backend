@@ -155,6 +155,17 @@ export class ProcessService {
       }
     }
 
+    // Update bot status in Firebase
+    const { db } = await import("../config/firebase.config");
+    try {
+      await db.collection("bots").doc(processKey).update({
+        status: "stopped",
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      console.error("Error updating bot status in Firebase:", error);
+    }
+
     // Clean up config file
     const configPath = path.join(process.cwd(), `${processKey}.json`);
     try {
@@ -190,6 +201,18 @@ export class ProcessService {
       processes[processKey].error = error;
       processes[processKey].lastUpdated = new Date().toISOString();
       await this.writeProcesses(processes);
+
+      // Update bot status in Firebase
+      const { db } = await import("../config/firebase.config");
+      try {
+        await db.collection("bots").doc(processKey).update({
+          status: "error",
+          errorText: error,
+          updatedAt: new Date(),
+        });
+      } catch (dbError) {
+        console.error("Error updating bot error status in Firebase:", dbError);
+      }
     }
   }
 
