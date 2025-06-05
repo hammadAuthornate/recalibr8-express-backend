@@ -186,11 +186,11 @@ export class BotService {
       await this.initializeBot(bot);
 
       // Update status to initialized if everything succeeds
-      await db.collection(this.COLLECTION).doc(bot.id!).update({
-        updatedAt: new Date(),
-        status: "initialized",
-        errorText: null, // Clear any error message
-      });
+      // await db.collection(this.COLLECTION).doc(bot.id!).update({
+      //   updatedAt: new Date(),
+      //   status: "initialized",
+      //   errorText: null, // Clear any error message
+      // });
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -265,6 +265,7 @@ export class BotService {
 
       // Update bot status to running
       console.log(`[Bot ${bot.id}] Updating bot status to running...`);
+      // Update bot status and code URL in database
       await db
         .collection(this.COLLECTION)
         .doc(bot.id!)
@@ -274,7 +275,16 @@ export class BotService {
           botCodeUrl: `/public/bots/${bot.id}.js`,
         });
 
-      console.log(`[Bot ${bot.id}] Initialization completed successfully`);
+      // Start the process
+      const { ProcessService } = await import("./process.service");
+      await ProcessService.startProcess({
+        ...bot,
+        processKey: bot.id!,
+      });
+
+      console.log(
+        `[Bot ${bot.id}] Initialization and process start completed successfully`
+      );
     } catch (error) {
       console.error(`[Bot ${bot.id}] Initialization failed:`, error);
       // Add additional error details for debugging
