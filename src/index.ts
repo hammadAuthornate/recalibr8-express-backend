@@ -28,6 +28,9 @@ app.use(
   })
 );
 
+// Serve static files from the public directory
+app.use("/public", express.static(path.join(__dirname, "public")));
+
 // Middleware to set a timeout
 const setRequestTimeout = (req: any, res: any, next: any) => {
   // Set timeout value (e.g., 10 minutes)

@@ -22,6 +22,13 @@ router.post(
 
     const bot = await BotService.create(botData);
     res.status(201).json(apiResponse(true, "Bot created successfully", bot));
+
+    // This code runs after response is sent
+    try {
+      await BotService.handlePostCreation(bot);
+    } catch (error) {
+      console.error("Post-creation processing failed:", error);
+    }
   })
 );
 

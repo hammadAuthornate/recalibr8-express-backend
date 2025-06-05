@@ -2,12 +2,14 @@ export interface BOT extends BotConfig {
   id?: string;
   prompt: string;
   userId: string;
+  status: BotStatus;
+  errorText?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 }
 
 export type BotMode = "watcher" | "action";
-export type BotStatus = "stopped" | "running" | "error";
+export type BotStatus = "stopped" | "running" | "error" | "pending";
 
 export interface BotConfig {
   processKey: string;
