@@ -193,6 +193,22 @@ export class ProcessService {
     }
   }
 
+  static async restartProcess(processKey: string): Promise<BotProcess> {
+    // Get existing process
+    const processes = await this.readProcesses();
+    const existingProcess = processes[processKey];
+
+    if (!existingProcess) {
+      throw new ApiError(404, "Process not found");
+    }
+
+    // Stop the existing process
+    await this.stopProcess(processKey);
+
+    // Start a new process with the same config
+    return await this.startProcess(existingProcess.config);
+  }
+
   private static async handleProcessOutput(
     processKey: string,
     output: string

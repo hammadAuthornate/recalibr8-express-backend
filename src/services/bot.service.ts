@@ -222,16 +222,33 @@ export class BotService {
 
     try {
       console.log(`[Bot ${bot.id}] Starting initialization process...`);
+
+      // Calculate port number based on total bots
+      const botsSnapshot = await db.collection(this.COLLECTION).get();
+      const totalBots = botsSnapshot.size;
+      const portNumber = 3100 + totalBots + 1; // Start from 3101
+
+      // Update bot document with port number
+      await db.collection(this.COLLECTION).doc(bot.id!).update({
+        port: portNumber,
+        updatedAt: new Date(),
+      });
+
+      console.log(`[Bot ${bot.id}] Assigned port number: ${portNumber}`);
       console.log(
         `[Bot ${bot.id}] Generating code from prompt: "${bot.prompt.substring(0, 50)}..."`
       );
 
-      // Generate the bot code using AI
-      const response = await generateCompleteCode(bot.prompt);
-      console.log(
-        "[Bot ${bot.id}] Raw AI response:",
-        JSON.stringify(response, null, 2)
+      // Generate the bot code using AI with calculated port
+      const response = await generateCompleteCode(
+        bot.prompt,
+        bot.id!,
+        portNumber
       );
+      // console.log(
+      //   "[Bot ${bot.id}] Raw AI response:",
+      //   JSON.stringify(response, null, 2)
+      // );
 
       if (!response || typeof response === "string") {
         throw new Error(`Invalid code generated, error ${response || ""}`);

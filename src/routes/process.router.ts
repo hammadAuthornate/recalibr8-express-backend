@@ -53,4 +53,15 @@ router.delete(
   })
 );
 
+// Restart a process
+router.post(
+  "/:processKey/restart",
+  asyncHandler(async (req: Request, res: Response) => {
+    const process = await ProcessService.restartProcess(req.params.processKey);
+    res
+      .status(200)
+      .json(apiResponse(true, "Process restarted successfully", process));
+  })
+);
+
 export { router as ProcessRouter };

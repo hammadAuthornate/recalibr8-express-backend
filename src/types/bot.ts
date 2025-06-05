@@ -2,6 +2,7 @@ export interface BOT extends BotConfig {
   id?: string;
   prompt: string;
   userId: string;
+  port?: number;
   status: BotStatus;
   errorText?: string;
   createdAt?: Date | string;

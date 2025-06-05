@@ -44,7 +44,11 @@ export const AICall = async (role: string, prompt: string, retries = 3) => {
   }
 };
 
-export async function generateCompleteCode(answer: string) {
+export async function generateCompleteCode(
+  answer: string,
+  txtFileName: string,
+  port: number
+) {
   const prompt = `
     You are an expert Node.js developer specializing in trading bots. Generate a complete functional trading bot based on this strategy:
 
@@ -98,7 +102,8 @@ export async function generateCompleteCode(answer: string) {
 
     Store all data in memory using global variables (trades array and results object). Update these data structures whenever trades happen or bot status changes.
 
-    Also include console logging for monitoring, but the main focus is the standardized data storage and API endpoints.
+    Keep all logs in a separate ${txtFileName}.txt file that should be in the same directory as the current file. txt file name must be "${txtFileName}.txt" and keep updated on log changes.
+    Must use port ${port} to run the server.
 
     Generate only the complete Node.js code with Express server, trading logic, and the two required API routes.
     `;
