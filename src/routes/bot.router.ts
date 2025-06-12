@@ -37,7 +37,9 @@ router.get(
   "/",
   asyncHandler(async (req: Request, res: Response) => {
     const userId = req.query.userId as string | undefined;
-    const bots = await BotService.getAll(userId);
+    const marketplace =
+      (req.query.marketplace as string) === "true" ? true : false;
+    const bots = await BotService.getAll(marketplace, userId);
     res
       .status(200)
       .json(apiResponse(true, "Bots retrieved successfully", bots));

@@ -4,11 +4,13 @@ export interface BOT extends BotConfig {
   userId: string;
   port?: number;
   status: BotStatus;
+  access?: AccessType;
   errorText?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 }
 
+export type AccessType = "public" | "gated" | "private";
 export type BotMode = "watcher" | "action";
 export type BotStatus = "stopped" | "running" | "error" | "pending";
 

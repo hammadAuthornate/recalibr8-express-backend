@@ -40,6 +40,7 @@ export class BotService {
       docRef = await db.collection(this.COLLECTION).add({
         ...cleanedData,
         status: "pending",
+        access: "private",
         createdAt: now,
         updatedAt: now,
       } as BOT);
@@ -48,6 +49,7 @@ export class BotService {
         id: docRef.id,
         ...cleanedData,
         status: "pending",
+        access: "private",
         createdAt: now,
         updatedAt: now,
       };
@@ -102,14 +104,25 @@ export class BotService {
     }
   }
 
-  static async getAll(userId?: string): Promise<BOT[]> {
+  static async getAll(marketplace: boolean, userId?: string): Promise<BOT[]> {
     try {
       const collectionRef = db.collection(this.COLLECTION);
-      const snapshot = userId
-        ? await collectionRef.where("userId", "==", userId).get()
-        : await collectionRef.get();
 
-      return snapshot.docs.map((doc) => ({
+      let query = collectionRef as any;
+
+      // If userId is provided, filter by userId
+      if (userId) {
+        query = query.where("userId", "==", userId);
+      }
+
+      // If marketplace is true, filter out private bots
+      if (marketplace) {
+        query = query.where("access", "!=", "private");
+      }
+
+      const snapshot = await query.get();
+
+      return snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...this.convertTimestamps(doc.data()),
       })) as BOT[];
