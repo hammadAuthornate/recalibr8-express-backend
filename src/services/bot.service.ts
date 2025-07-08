@@ -5,6 +5,7 @@ import { generateCompleteCode } from "./ai.service";
 
 export class BotService {
   private static readonly COLLECTION = "bots";
+  private static readonly CODE_COLLECTION = "bots-code";
 
   private static removeEmptyFields(data: any): any {
     const cleanData = { ...data };
@@ -282,6 +283,14 @@ export class BotService {
       // }
 
       console.log("AI generated code ", generatedCodeAI);
+
+      // Store the AI generated code in the CODE_COLLECTION with document id as bot.id
+      await db.collection(this.CODE_COLLECTION).doc(bot.id!).set({
+        code: generatedCodeAI,
+        createdAt: new Date(),
+        botId: bot.id,
+        prompt: bot.prompt,
+      });
 
       const generatedCode =
         "const ccxt = require('ccxt');\n\
@@ -573,7 +582,7 @@ export class BotService {
       const filePath = path.join(publicDir, `${bot.id}.js`);
       console.log(`[Bot ${bot.id}] Saving code to file: ${filePath}`);
 
-      await fs.writeFile(filePath, generatedCode, "utf8");
+      await fs.writeFile(filePath, generatedCodeAI, "utf8");
       console.log(`[Bot ${bot.id}] Code file saved successfully`);
 
       // Update bot status to running
